@@ -7,29 +7,35 @@ import models.UserModel;
 import repositories.UserRepository;
 
 public class UserService {
-    private UserRepository repository;
+    
+    private UserRepository userRepository;
 
-    public UserService(UserRepository repository) {
-        this.repository = repository;
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     public List<UserModel> getAll() {
-        return repository.getAll();
+        return userRepository.getAll();
     }
 
     public UserModel getById(UUID id) {
-        return repository.getById(id);
+        return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User Not Found!"));
     }
 
     public UserModel save(UserModel user) {
-        return repository.save(user);
+        return userRepository.save(user);
     }
 
     public UserModel update(UUID id, UserModel updatedUser) {
-        return repository.update(id, updatedUser);
+        return userRepository.findById(id).map(existingUser -> {
+            existingUser.setName(updatedUser.getName());
+            existingUser.setEmail(updatedUser.getEmail());
+            existingUser.setBirthDate(updatedUser.getBirthDate());
+            return userRepository.save(existingUser);
+        }).orElseThrow(() -> new RuntimeException("User Not Found!"));
     }
 
     public void delete(UUID id) {
-        repository.deleteById(id);
+        userRepository.deleteById(id);
     }
 }

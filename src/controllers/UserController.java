@@ -7,6 +7,7 @@ import models.UserModel;
 import services.UserService;
 
 public class UserController {
+    
     private UserService service;
 
     public UserController(UserService service) {

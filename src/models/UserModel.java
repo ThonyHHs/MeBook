@@ -3,7 +3,10 @@ package models;
 import java.time.LocalDate;
 import java.util.UUID;
 
-public class UserModel {
+import models.Interfaces.Identification;
+
+public class UserModel implements Identification<UUID> {
+
     private UUID id;
     private String name;
     private String email;
@@ -56,9 +59,6 @@ public class UserModel {
                 name: %s
                 email: %s
                 birthDate: %s
-            }
-                """, id, name, email, birthDate);
+            }""", id, name, email, birthDate);
     }
-
-    
 }
