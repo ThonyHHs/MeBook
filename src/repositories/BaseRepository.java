@@ -23,7 +23,7 @@ public abstract class BaseRepository<T extends Identification<ID>, ID> {
         objectMap.put(newObject.getId(), newObject);
         return newObject;
     }
-    
+
     public void deleteById(ID id) {
         objectMap.remove(id);
     }

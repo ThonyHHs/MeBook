@@ -15,7 +15,7 @@ public class BookModel implements Identification<UUID> {
     private String author;
     private LocalDate releaseDate;
     private List<GenreEnum> genres;
-    
+
     public BookModel(String title, String description, String author, LocalDate releaseDate, List<GenreEnum> genres) {
         this.id = UUID.randomUUID();
         this.title = title;
@@ -76,14 +76,13 @@ public class BookModel implements Identification<UUID> {
     @Override
     public String toString() {
         return String.format("""
-            {
-                id: %s
-                title: %s
-                description: %s
-                author: %s
-                releaseDate: %s
-                genres: %s
-            }""", id, title, description, author, releaseDate, genres);
+                {
+                    id: %s
+                    title: %s
+                    description: %s
+                    author: %s
+                    releaseDate: %s
+                    genres: %s
+                }""", id, title, description, author, releaseDate, genres);
     }
 }
-

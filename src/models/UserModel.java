@@ -11,12 +11,14 @@ public class UserModel implements Identification<UUID> {
     private String name;
     private String email;
     private LocalDate birthDate;
+    private UUID bookshelfId;
 
     public UserModel(String name, String email, LocalDate birthDate) {
         this.id = UUID.randomUUID();
         this.name = name;
         this.email = email;
         this.birthDate = birthDate;
+        this.bookshelfId = null;
     }
 
     public UUID getId() {
@@ -51,14 +53,23 @@ public class UserModel implements Identification<UUID> {
         this.birthDate = birthDate;
     }
 
+    public UUID getBookshelfId() {
+        return bookshelfId;
+    }
+
+    public void setBookshelfId(UUID bookshelfId) {
+        this.bookshelfId = bookshelfId;
+    }
+
     @Override
     public String toString() {
         return String.format("""
-            {
-                id: %s
-                name: %s
-                email: %s
-                birthDate: %s
-            }""", id, name, email, birthDate);
+                {
+                    id: %s,
+                    name: %s,
+                    email: %s,
+                    birthDate: %s,
+                    bookshelfId: %s
+                }""", id, name, email, birthDate, bookshelfId);
     }
 }

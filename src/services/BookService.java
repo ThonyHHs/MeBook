@@ -7,7 +7,7 @@ import models.BookModel;
 import repositories.BookRepository;
 
 public class BookService {
-    
+
     private BookRepository bookRepository;
 
     public BookService(BookRepository bookRepository) {

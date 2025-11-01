@@ -7,7 +7,7 @@ import models.UserModel;
 import repositories.UserRepository;
 
 public class UserService {
-    
+
     private UserRepository userRepository;
 
     public UserService(UserRepository userRepository) {
