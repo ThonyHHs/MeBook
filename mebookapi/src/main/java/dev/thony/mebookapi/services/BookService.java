@@ -6,9 +6,12 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 import dev.thony.mebookapi.models.BookModel;
+import dev.thony.mebookapi.models.BookshelfModel;
 import dev.thony.mebookapi.repositories.BookRepository;
+import jakarta.transaction.Transactional;
 
 @Service
+@Transactional
 public class BookService {
 
     private BookRepository bookRepository;
@@ -41,6 +44,14 @@ public class BookService {
     }
 
     public void delete(UUID id) {
-        bookRepository.deleteById(id);
+        BookModel book = getById(id);
+        if (book.getBookshelves() != null) {
+            for (BookshelfModel bookshelf : book.getBookshelves()) {
+                bookshelf.getBookList().remove(book);
+            }
+        }
+
+        bookRepository.delete(book);
     }
+    
 }

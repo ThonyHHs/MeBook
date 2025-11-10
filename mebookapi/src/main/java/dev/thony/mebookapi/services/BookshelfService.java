@@ -1,7 +1,6 @@
 package dev.thony.mebookapi.services;
 
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -10,8 +9,10 @@ import dev.thony.mebookapi.models.BookModel;
 import dev.thony.mebookapi.models.BookshelfModel;
 import dev.thony.mebookapi.models.UserModel;
 import dev.thony.mebookapi.repositories.BookshelfRepository;
+import jakarta.transaction.Transactional;
 
 @Service
+@Transactional
 public class BookshelfService {
 
     private BookshelfRepository bookshelfRepository;
@@ -40,38 +41,44 @@ public class BookshelfService {
             return bookshelf;
         }
 
-        bookshelf = new BookshelfModel(user, visibility);
+        bookshelf = new BookshelfModel();
+        bookshelf.setUser(user);
+        bookshelf.setVisibility(visibility);
         bookshelfRepository.save(bookshelf);
-        user.setBookshelf(bookshelf);
-        userService.update(userId, user);
 
         return bookshelf;
     }
 
     public BookshelfModel addBook(UUID userId, UUID bookId) {
         UserModel user = userService.getById(userId);
-        if (user.getBookshelf() != null) {
-            BookshelfModel bookshelf = user.getBookshelf();
-            Set<BookModel> updatedBookList = bookshelf.getBookList();
-            updatedBookList.add(bookService.getById(bookId));
-            bookshelf.setBookList(updatedBookList);
-            return bookshelfRepository.save(bookshelf);
-        } else {
-            return createBookshelf(userId, true);
+        BookshelfModel bookshelf = user.getBookshelf();
+
+        if (bookshelf == null) {
+            bookshelf = createBookshelf(userId, true);
         }
+
+        bookshelf.getBookList().add(bookService.getById(bookId));
+        return bookshelfRepository.save(bookshelf);
     }
 
     public void delete(UUID userId) {
-        bookshelfRepository.delete(userService.getById(userId).getBookshelf());
+        UserModel user = userService.getById(userId);
+        BookshelfModel bookshelf = user.getBookshelf();
+        if (bookshelf != null) {
+            user.setBookshelf(null);
+            userService.update(userId, user);
+            bookshelfRepository.delete(bookshelf);
+        }
     }
 
     public void deleteBook(UUID userId, UUID bookId) {
         UserModel user = userService.getById(userId);
+        BookshelfModel bookshelf = user.getBookshelf();
+
         if (user.getBookshelf() != null) {
-            BookshelfModel bookshelf = new BookshelfModel();
-            Set<BookModel> updatedBookList = bookshelf.getBookList();
-            updatedBookList.remove(bookService.getById(bookId));
-            
+            BookModel bookToDelete = bookService.getById(bookId);
+            bookshelf.getBookList().remove(bookToDelete);
+            bookshelfRepository.save(bookshelf);            
         } else {
             throw new RuntimeException("User does not have a bookshelf");
         }
@@ -80,11 +87,7 @@ public class BookshelfService {
     public BookshelfModel setVisibility(UUID userId) {
         BookshelfModel bookshelf = userService.getById(userId).getBookshelf();
 
-        if (bookshelf.isVisibility()) {
-            bookshelf.setVisibility(false);
-        } else {
-            bookshelf.setVisibility(true);
-        }
+        bookshelf.setVisibility(!bookshelf.isVisibility());
 
         return bookshelfRepository.save(bookshelf);
     }

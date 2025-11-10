@@ -13,9 +13,17 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "book")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class BookModel {
     
     @Id
@@ -30,70 +38,4 @@ public class BookModel {
     @ManyToMany(mappedBy = "bookList")
     private Set<BookshelfModel> bookshelves = new HashSet<>();
 
-    
-    public BookModel() {}
-    
-    public BookModel(String title, String description, String author, LocalDate releaseDate, List<GenreEnum> genres) {
-        this.title = title;
-        this.description = description;
-        this.author = author;
-        this.releaseDate = releaseDate;
-        this.genres = genres;
-    }
-    
-    public UUID getId() {
-        return id;
-    }
-    
-    public void setId(UUID id) {
-        this.id = id;
-    }
-    
-    public String getTitle() {
-        return title;
-    }
-    
-    public void setTitle(String title) {
-        this.title = title;
-    }
-    
-    public String getDescription() {
-        return description;
-    }
-    
-    public void setDescription(String description) {
-        this.description = description;
-    }
-    
-    public String getAuthor() {
-        return author;
-    }
-    
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-    
-    public LocalDate getReleaseDate() {
-        return releaseDate;
-    }
-    
-    public void setReleaseDate(LocalDate releaseDate) {
-        this.releaseDate = releaseDate;
-    }
-    
-    public List<GenreEnum> getGenres() {
-        return genres;
-    }
-    
-    public void setGenres(List<GenreEnum> genres) {
-        this.genres = genres;
-    }
-
-    public Set<BookshelfModel> getBookshelves() {
-        return bookshelves;
-    }
-
-    public void setBookshelves(Set<BookshelfModel> bookshelves) {
-        this.bookshelves = bookshelves;
-    }
 }
