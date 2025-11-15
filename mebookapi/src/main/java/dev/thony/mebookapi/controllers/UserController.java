@@ -55,7 +55,24 @@ public class UserController {
         userService.delete(userId);
     }
 
-    public BookshelfModel createBookshelf(UUID userId, boolean visibility) {
+    @GetMapping("/{userId}/bookshelf")
+    public BookshelfModel getBookshelf(@PathVariable UUID userId) {
+        return bookshelfService.getByUserId(userId);
+    }
+
+    @PostMapping("/{userId}/bookshelf")
+    public BookshelfModel createBookshelf(@PathVariable UUID userId, @RequestBody boolean visibility) {
         return bookshelfService.createBookshelf(userId, visibility);
     }
+
+    @PutMapping("/{userId}/bookshelf")
+    public BookshelfModel updateBookshelf(@PathVariable UUID userId, @RequestBody BookshelfModel newBookshelf) {
+        return bookshelfService.update(userId, newBookshelf);
+    }
+
+    @DeleteMapping("/{userId}/bookshelf")
+    public void deleteBookshelf(@PathVariable UUID userId) {
+        bookshelfService.delete(userId);
+    }
+
 }

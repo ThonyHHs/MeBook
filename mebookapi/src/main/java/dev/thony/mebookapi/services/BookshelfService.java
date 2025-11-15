@@ -30,13 +30,31 @@ public class BookshelfService {
     }
 
     public BookshelfModel getById(UUID id) {
-        return bookshelfRepository.findById(id).orElseThrow(() -> new RuntimeException("Bookshelf Not Found!"));
+        BookshelfModel bookshelf = bookshelfRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Bookshelf Not Found!"));
+        if (bookshelf.isVisibility() == false) {
+            throw new RuntimeException("This bookshelf is not public");
+        }
+        return bookshelf;
+    }
+
+    public BookshelfModel getByUserId(UUID userId) {
+        UserModel user = userService.getById(userId);
+        BookshelfModel bookshelf = user.getBookshelf();
+
+        if (bookshelf == null) {
+            throw new RuntimeException("User does not have bookshelf!");
+        }
+        if (bookshelf.isVisibility() == false) {
+            throw new RuntimeException("This bookshelf is not public!");
+        }
+        return bookshelf;
     }
 
     public BookshelfModel createBookshelf(UUID userId, boolean visibility) {
         UserModel user = userService.getById(userId);
         BookshelfModel bookshelf = user.getBookshelf();
-        
+
         if (bookshelf != null) {
             return bookshelf;
         }
@@ -54,10 +72,22 @@ public class BookshelfService {
         BookshelfModel bookshelf = user.getBookshelf();
 
         if (bookshelf == null) {
-            bookshelf = createBookshelf(userId, true);
+            throw new RuntimeException("User does not have a bookshelf!");
         }
 
         bookshelf.getBookList().add(bookService.getById(bookId));
+        return bookshelfRepository.save(bookshelf);
+    }
+
+    public BookshelfModel update(UUID userId, BookshelfModel newBookshelf) {
+        UserModel user = userService.getById(userId);
+        BookshelfModel bookshelf = user.getBookshelf();
+
+        if (bookshelf == null) {
+            throw new RuntimeException("User does not have a bookshelf!");
+        }
+
+        bookshelf.setVisibility(newBookshelf.isVisibility());
         return bookshelfRepository.save(bookshelf);
     }
 
@@ -78,17 +108,9 @@ public class BookshelfService {
         if (user.getBookshelf() != null) {
             BookModel bookToDelete = bookService.getById(bookId);
             bookshelf.getBookList().remove(bookToDelete);
-            bookshelfRepository.save(bookshelf);            
+            bookshelfRepository.save(bookshelf);
         } else {
             throw new RuntimeException("User does not have a bookshelf");
         }
-    }
-
-    public BookshelfModel setVisibility(UUID userId) {
-        BookshelfModel bookshelf = userService.getById(userId).getBookshelf();
-
-        bookshelf.setVisibility(!bookshelf.isVisibility());
-
-        return bookshelfRepository.save(bookshelf);
     }
 }

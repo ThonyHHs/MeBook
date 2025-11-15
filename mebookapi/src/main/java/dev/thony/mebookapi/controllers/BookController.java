@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import dev.thony.mebookapi.models.BookModel;
 import dev.thony.mebookapi.services.BookService;
 
-
 @RestController
 @RequestMapping("/v1/books")
 public class BookController {
@@ -31,9 +30,9 @@ public class BookController {
         return bookService.getAll();
     }
 
-    @GetMapping("/{id}")
-    public BookModel getById(@PathVariable UUID id) {
-        return bookService.getById(id);
+    @GetMapping("/{bookId}")
+    public BookModel getById(@PathVariable UUID bookId) {
+        return bookService.getById(bookId);
     }
 
     @PostMapping()
@@ -41,13 +40,14 @@ public class BookController {
         return bookService.save(book);
     }
 
-    @PutMapping("/{id}")
-    public BookModel update(@PathVariable UUID id, @RequestBody BookModel updatedBook) {
-        return bookService.update(id, updatedBook);
+    @PutMapping("/{bookId}")
+    public BookModel update(@PathVariable UUID bookId, @RequestBody BookModel updatedBook) {
+        return bookService.update(bookId, updatedBook);
     }
 
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable UUID id) {
-        bookService.delete(id);
+    @DeleteMapping("/{bookId}")
+    public void delete(@PathVariable UUID bookId) {
+        bookService.delete(bookId);
     }
+
 }
