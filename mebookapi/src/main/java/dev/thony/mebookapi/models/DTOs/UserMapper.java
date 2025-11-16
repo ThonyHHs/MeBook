@@ -1,5 +1,6 @@
 package dev.thony.mebookapi.models.DTOs;
 
+import dev.thony.mebookapi.models.BookshelfModel;
 import dev.thony.mebookapi.models.UserModel;
 
 public class UserMapper {
@@ -9,7 +10,10 @@ public class UserMapper {
         userDTO.setName(user.getName());
         userDTO.setEmail(user.getEmail());
         userDTO.setBirthDate(user.getBirthDate());
-        userDTO.setBookshelf(BookshelfMapper.toDto(user.getBookshelf()));
+        BookshelfModel bookshelf = user.getBookshelf();
+        if (bookshelf != null) {
+            userDTO.setBookshelf(BookshelfMapper.toDto(bookshelf));
+        }
         return userDTO;
     }
 }

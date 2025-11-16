@@ -2,6 +2,7 @@ package dev.thony.mebookapi.controllers;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -9,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import dev.thony.mebookapi.models.BookshelfModel;
+import dev.thony.mebookapi.models.DTOs.BookshelfDTO;
+import dev.thony.mebookapi.models.DTOs.BookshelfMapper;
 import dev.thony.mebookapi.services.BookshelfService;
 
 @RestController
@@ -21,14 +24,14 @@ public class BookshelfController {
         this.bookshelfService = bookshelfService;
     }
 
-    @GetMapping("/bookshelves")
-    public List<BookshelfModel> getAll() {
-        return bookshelfService.getAll();
+    @GetMapping()
+    public List<BookshelfDTO> getAll() {
+        return bookshelfService.getAll().stream().map(BookshelfMapper::toDto).collect(Collectors.toList());
     }
 
-    @GetMapping("/bookshelves/{bookshelfId}")
-    public BookshelfModel getById(@PathVariable UUID bookshelfId) {
-        return bookshelfService.getById(bookshelfId);
+    @GetMapping("/{bookshelfId}")
+    public BookshelfDTO getById(@PathVariable UUID bookshelfId) {
+        return BookshelfMapper.toDto(bookshelfService.getById(bookshelfId));
     }
 
 }

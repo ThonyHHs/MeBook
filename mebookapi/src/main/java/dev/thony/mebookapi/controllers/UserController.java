@@ -1,7 +1,6 @@
 package dev.thony.mebookapi.controllers;
 
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -14,9 +13,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import dev.thony.mebookapi.models.BookModel;
 import dev.thony.mebookapi.models.BookshelfModel;
 import dev.thony.mebookapi.models.UserModel;
+import dev.thony.mebookapi.models.DTOs.BookDTO;
+import dev.thony.mebookapi.models.DTOs.BookMapper;
 import dev.thony.mebookapi.models.DTOs.BookshelfDTO;
 import dev.thony.mebookapi.models.DTOs.BookshelfMapper;
 import dev.thony.mebookapi.models.DTOs.UserDTO;
@@ -60,7 +60,6 @@ public class UserController {
 
     @DeleteMapping("/{userId}")
     public void delete(@PathVariable UUID userId) {
-        bookshelfService.delete(userId);
         userService.delete(userId);
     }
 
@@ -70,8 +69,8 @@ public class UserController {
     }
 
     @PostMapping("/{userId}/bookshelf")
-    public BookshelfDTO createBookshelf(@PathVariable UUID userId, @RequestBody boolean visibility) {
-        return BookshelfMapper.toDto(bookshelfService.createBookshelf(userId, visibility));
+    public BookshelfDTO createBookshelf(@PathVariable UUID userId, @RequestBody BookshelfModel newBookshelf) {
+        return BookshelfMapper.toDto(bookshelfService.createBookshelf(userId, newBookshelf.isVisibility()));
     }
 
     @PutMapping("/{userId}/bookshelf")
@@ -85,8 +84,10 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/bookshelf/books")
-    public Set<BookModel> getBookshelfBooks(@PathVariable UUID userId) {
-        return userService.getById(userId).getBookshelf().getBookList();
+    public List<BookDTO> getBookshelfBooks(@PathVariable UUID userId) {
+        return bookshelfService.getByUserId(userId).getBookList().stream()
+                .map(BookMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     @PostMapping("/{userId}/bookshelf/books/{bookId}")
@@ -95,8 +96,8 @@ public class UserController {
     }
 
     @DeleteMapping("/{userId}/bookshelf/books/{bookId}")
-    public void deleteBookFromBookshelf(@PathVariable UUID userId, @PathVariable UUID bookid) {
-        bookshelfService.deleteBook(userId, bookid);
+    public void deleteBookFromBookshelf(@PathVariable UUID userId, @PathVariable UUID bookId) {
+        bookshelfService.deleteBook(userId, bookId);
     }
 
 }

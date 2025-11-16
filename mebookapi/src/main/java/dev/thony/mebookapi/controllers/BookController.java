@@ -2,6 +2,7 @@ package dev.thony.mebookapi.controllers;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import dev.thony.mebookapi.models.BookModel;
+import dev.thony.mebookapi.models.DTOs.BookDTO;
+import dev.thony.mebookapi.models.DTOs.BookMapper;
 import dev.thony.mebookapi.services.BookService;
 
 @RestController
@@ -26,23 +29,23 @@ public class BookController {
     }
 
     @GetMapping
-    public List<BookModel> getAll() {
-        return bookService.getAll();
+    public List<BookDTO> getAll() {
+        return bookService.getAll().stream().map(BookMapper::toDto).collect(Collectors.toList());
     }
 
     @GetMapping("/{bookId}")
-    public BookModel getById(@PathVariable UUID bookId) {
-        return bookService.getById(bookId);
+    public BookDTO getById(@PathVariable UUID bookId) {
+        return BookMapper.toDto(bookService.getById(bookId));
     }
 
     @PostMapping()
-    public BookModel save(@RequestBody BookModel book) {
-        return bookService.save(book);
+    public BookDTO save(@RequestBody BookModel book) {
+        return BookMapper.toDto(bookService.save(book));
     }
 
     @PutMapping("/{bookId}")
-    public BookModel update(@PathVariable UUID bookId, @RequestBody BookModel updatedBook) {
-        return bookService.update(bookId, updatedBook);
+    public BookDTO update(@PathVariable UUID bookId, @RequestBody BookModel updatedBook) {
+        return BookMapper.toDto(bookService.update(bookId, updatedBook));
     }
 
     @DeleteMapping("/{bookId}")

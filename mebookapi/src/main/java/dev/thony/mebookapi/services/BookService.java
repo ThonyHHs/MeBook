@@ -45,10 +45,8 @@ public class BookService {
 
     public void delete(UUID id) {
         BookModel book = getById(id);
-        if (book.getBookshelves() != null) {
-            for (BookshelfModel bookshelf : book.getBookshelves()) {
-                bookshelf.getBookList().remove(book);
-            }
+        for (BookshelfModel bookshelf : book.getBookshelves()) {
+            bookshelf.getBookList().remove(book);
         }
 
         bookRepository.delete(book);
