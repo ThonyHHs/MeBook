@@ -1,7 +1,9 @@
 package dev.thony.mebookapi.controllers;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,8 +14,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import dev.thony.mebookapi.models.BookModel;
 import dev.thony.mebookapi.models.BookshelfModel;
 import dev.thony.mebookapi.models.UserModel;
+import dev.thony.mebookapi.models.DTOs.BookshelfDTO;
+import dev.thony.mebookapi.models.DTOs.BookshelfMapper;
+import dev.thony.mebookapi.models.DTOs.UserDTO;
+import dev.thony.mebookapi.models.DTOs.UserMapper;
 import dev.thony.mebookapi.services.BookshelfService;
 import dev.thony.mebookapi.services.UserService;
 
@@ -30,23 +37,25 @@ public class UserController {
     }
 
     @GetMapping
-    public List<UserModel> getAll() {
-        return userService.getAll();
+    public List<UserDTO> getAll() {
+        return userService.getAll().stream()
+                .map(UserMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/{userId}")
-    public UserModel getById(@PathVariable UUID userId) {
-        return userService.getById(userId);
+    public UserDTO getById(@PathVariable UUID userId) {
+        return UserMapper.toDto(userService.getById(userId));
     }
 
     @PostMapping
-    public UserModel save(@RequestBody UserModel user) {
-        return userService.save(user);
+    public UserDTO save(@RequestBody UserModel user) {
+        return UserMapper.toDto(userService.save(user));
     }
 
     @PutMapping("/{userId}")
-    public UserModel update(@PathVariable UUID userId, @RequestBody UserModel updatedUser) {
-        return userService.update(userId, updatedUser);
+    public UserDTO update(@PathVariable UUID userId, @RequestBody UserModel updatedUser) {
+        return UserMapper.toDto(userService.update(userId, updatedUser));
     }
 
     @DeleteMapping("/{userId}")
@@ -56,23 +65,38 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/bookshelf")
-    public BookshelfModel getBookshelf(@PathVariable UUID userId) {
-        return bookshelfService.getByUserId(userId);
+    public BookshelfDTO getBookshelf(@PathVariable UUID userId) {
+        return BookshelfMapper.toDto(bookshelfService.getByUserId(userId));
     }
 
     @PostMapping("/{userId}/bookshelf")
-    public BookshelfModel createBookshelf(@PathVariable UUID userId, @RequestBody boolean visibility) {
-        return bookshelfService.createBookshelf(userId, visibility);
+    public BookshelfDTO createBookshelf(@PathVariable UUID userId, @RequestBody boolean visibility) {
+        return BookshelfMapper.toDto(bookshelfService.createBookshelf(userId, visibility));
     }
 
     @PutMapping("/{userId}/bookshelf")
-    public BookshelfModel updateBookshelf(@PathVariable UUID userId, @RequestBody BookshelfModel newBookshelf) {
-        return bookshelfService.update(userId, newBookshelf);
+    public BookshelfDTO updateBookshelf(@PathVariable UUID userId, @RequestBody BookshelfModel newBookshelf) {
+        return BookshelfMapper.toDto(bookshelfService.update(userId, newBookshelf));
     }
 
     @DeleteMapping("/{userId}/bookshelf")
     public void deleteBookshelf(@PathVariable UUID userId) {
         bookshelfService.delete(userId);
+    }
+
+    @GetMapping("/{userId}/bookshelf/books")
+    public Set<BookModel> getBookshelfBooks(@PathVariable UUID userId) {
+        return userService.getById(userId).getBookshelf().getBookList();
+    }
+
+    @PostMapping("/{userId}/bookshelf/books/{bookId}")
+    public BookshelfDTO addBookToBookshelf(@PathVariable UUID userId, @PathVariable UUID bookId) {
+        return BookshelfMapper.toDto(bookshelfService.addBook(userId, bookId));
+    }
+
+    @DeleteMapping("/{userId}/bookshelf/books/{bookId}")
+    public void deleteBookFromBookshelf(@PathVariable UUID userId, @PathVariable UUID bookid) {
+        bookshelfService.deleteBook(userId, bookid);
     }
 
 }
