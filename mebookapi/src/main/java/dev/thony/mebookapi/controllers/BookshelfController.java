@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import dev.thony.mebookapi.models.BookshelfModel;
 import dev.thony.mebookapi.models.DTOs.BookshelfDTO;
 import dev.thony.mebookapi.models.DTOs.BookshelfMapper;
 import dev.thony.mebookapi.services.BookshelfService;

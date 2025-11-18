@@ -10,7 +10,7 @@ public class BookMapper {
         bookDTO.setDescription(book.getDescription());
         bookDTO.setAuthor(book.getAuthor());
         bookDTO.setReleaseDate(book.getReleaseDate());
-        bookDTO.setGenres(book.getGenres());
+        bookDTO.setGenreList(book.getGenreList());
 
         return bookDTO;
     }

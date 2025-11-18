@@ -1,5 +1,7 @@
 # API Documentation
+
 ## User endpoints
+
 ```bash
 GET     /api/v1/users               # get all users
 GET     /api/v1/users/{userId}      # get user by id
@@ -16,6 +18,7 @@ POST    /api/v1/users/{userId}/bookshelf/books/{bookId}     # add book to booksh
 DELETE  /api/v1/users/{userId}/bookshelf/books/{bookId}     # delete book from bookshelf
 ```
 ## Book endpoints
+
 ```bash
 GET     /api/v1/books               # get all books
 GET     /api/v1/books/{bookId}      # get book by id
@@ -24,6 +27,7 @@ PUT     /api/v1/books/{bookId}      # update book by id
 DELETE  /api/v1/books/{bookId}      # delete book by id
 ```
 ## Bookshelf endpoints
+
 ```bash
 GET     /api/v1/bookshelves                 # get all public bookshelves
 GET     /api/v1/bookshelves/{bookshelfId}   # get public bookshelf by id

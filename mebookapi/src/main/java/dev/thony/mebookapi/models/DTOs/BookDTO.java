@@ -1,10 +1,10 @@
 package dev.thony.mebookapi.models.DTOs;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
-import dev.thony.mebookapi.models.enums.GenreEnum;
+import dev.thony.mebookapi.models.GenreModel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,5 +20,5 @@ public class BookDTO {
     private String description;
     private String author;
     private LocalDate releaseDate;
-    private List<GenreEnum> genres;
+    private Set<GenreModel> genreList;
 }
